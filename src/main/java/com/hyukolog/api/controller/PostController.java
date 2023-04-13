@@ -2,6 +2,7 @@ package com.hyukolog.api.controller;
 
 import com.hyukolog.api.domain.Post;
 import com.hyukolog.api.request.PostCreate;
+import com.hyukolog.api.request.PostSearch;
 import com.hyukolog.api.response.PostResponse;
 import com.hyukolog.api.service.PostService;
 import lombok.RequiredArgsConstructor;
@@ -63,8 +64,8 @@ public class PostController {
      */
 
     @GetMapping("/posts")
-    public List<PostResponse> getList(Pageable page) {
-        return postService.getList(page);
+    public List<PostResponse> getList(PostSearch postSearch) {
+        return postService.getList(postSearch);
     }
 
 //    @PatchMapping("/posts/{postId}")

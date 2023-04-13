@@ -3,6 +3,7 @@ package com.hyukolog.api.service;
 import com.hyukolog.api.domain.Post;
 import com.hyukolog.api.repository.PostRepository;
 import com.hyukolog.api.request.PostCreate;
+import com.hyukolog.api.request.PostSearch;
 import com.hyukolog.api.response.PostResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -39,10 +40,10 @@ public class PostService {
         return new PostResponse(post);
     }
 
-    public List<PostResponse> getList(Pageable pageable) {
+    public List<PostResponse> getList(PostSearch postSearch) {
         // web -> page 1 -> 0
 
-        return postRepository.findAll(pageable).stream()
+        return postRepository.getList(postSearch).stream()
                 .map(PostResponse::new)
                 .collect(Collectors.toList());
     }
