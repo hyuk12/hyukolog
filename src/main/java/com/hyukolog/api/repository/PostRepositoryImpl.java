@@ -1,14 +1,13 @@
 package com.hyukolog.api.repository;
 
 import com.hyukolog.api.domain.Post;
-import com.hyukolog.api.domain.QPost;
 import com.hyukolog.api.request.PostSearch;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
-import static com.hyukolog.api.domain.QPost.*;
+import static com.hyukolog.api.domain.QPost.post;
 
 @RequiredArgsConstructor
 public class PostRepositoryImpl implements PostRepositoryCustom{

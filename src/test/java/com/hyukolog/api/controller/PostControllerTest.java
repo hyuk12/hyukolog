@@ -1,9 +1,11 @@
 package com.hyukolog.api.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hyukolog.api.domain.Post;
 import com.hyukolog.api.repository.PostRepository;
 import com.hyukolog.api.request.PostCreate;
+import com.hyukolog.api.request.PostEdit;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,8 +21,7 @@ import java.util.stream.IntStream;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -136,7 +137,7 @@ class PostControllerTest {
     void test4() throws Exception {
         // given
         Post post = Post.builder()
-                .title("123456789012345")
+                .title("1")
                 .content("bar")
                 .build();
         postRepository.save(post);
@@ -146,7 +147,7 @@ class PostControllerTest {
                         .contentType(APPLICATION_JSON)) // application/json
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(post.getId()))
-                .andExpect(jsonPath("$.title").value("1234567890"))
+                .andExpect(jsonPath("$.title").value("1"))
                 .andExpect(jsonPath("$.content").value("bar"))
                 .andDo(print());
 
@@ -202,4 +203,103 @@ class PostControllerTest {
 
 
     }
+
+    @Test
+    @DisplayName("글 내용 수정")
+    void test7() throws Exception {
+        // given
+
+        Post post = Post.builder()
+                .title("혀코 제목")
+                .content("롯데타워")
+                .build();
+
+        postRepository.save(post);
+
+        PostEdit postEdit = PostEdit.builder()
+                .title("수정된 제목")
+                .content("수정된 내용")
+                .build();
+
+        // expected
+        mockMvc.perform(patch("/posts/{postId}", post.getId())
+                .contentType(APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(postEdit)))
+                .andExpect(status().isOk())
+                .andDo(print());
+
+    }
+
+    @Test
+    @DisplayName("글 삭제")
+    void test8() throws Exception {
+        // given
+
+        Post post = Post.builder()
+                .title("혀코 제목")
+                .content("롯데타워")
+                .build();
+
+        postRepository.save(post);
+
+        mockMvc.perform(delete("/posts/{postId}", post.getId())
+                .contentType(APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andDo(print());
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 게시글 조회")
+    void test9() throws Exception {
+        mockMvc.perform(get("/posts/{postId}",1L)
+                        .contentType(APPLICATION_JSON))
+                .andExpect(status().isNotFound())
+                .andDo(print());
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 게시글 수정")
+    void test10() throws Exception {
+        PostEdit postEdit = PostEdit.builder()
+                .title("수정된 제목")
+                .content("수정된 내용")
+                .build();
+
+        // expected
+        mockMvc.perform(patch("/posts/{postId}", 1L)
+                        .contentType(APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(postEdit)))
+                .andExpect(status().isNotFound())
+                .andDo(print());
+    }
+
+    @Test
+    @DisplayName("제목에는 바보가 포함 될 수 없습니다.")
+    void test11() throws Exception {
+        // given
+        PostCreate request = PostCreate.builder()
+                .title("나는 바보입니다.")
+                .content("글내용입니다..")
+                .build();
+
+        String json = objectMapper.writeValueAsString(request);
+
+        //when
+        mockMvc.perform(post("/posts")
+                        .contentType(APPLICATION_JSON)
+                        .content(json)
+                ) // application/json
+                .andExpect(status().isBadRequest())
+                .andDo(print());
+    }
+
+    // API 문서 생성
+
+    // GET /posts/{postId} -> 단건 조회
+    // POST /posts -> 글 생성
+
+    // Spring RestDocs
+    // 장점 : 운영 코드에 영향이 없다.
+    //       코드 수정 -> 문서를 수정 X -> 코드(기능) <-> 문서
+    //       Test 케이스 실행 -> 문서를 생성해준다.
 }

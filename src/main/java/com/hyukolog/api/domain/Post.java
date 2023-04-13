@@ -1,5 +1,6 @@
 package com.hyukolog.api.domain;
 
+import com.hyukolog.api.request.PostEdit;
 import lombok.*;
 
 import javax.persistence.*;
@@ -25,4 +26,16 @@ public class Post {
         this.title = title;
         this.content = content;
     }
+
+    public PostEditor.PostEditorBuilder toEditor() {
+        return PostEditor.builder()
+                .title(title)
+                .content(content);
+    }
+
+    public void edit(PostEditor postEditor) {
+        this.title = postEditor.getTitle();
+        this.content = postEditor.getContent();
+    }
+
 }

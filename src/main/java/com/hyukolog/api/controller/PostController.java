@@ -1,7 +1,9 @@
 package com.hyukolog.api.controller;
 
 import com.hyukolog.api.domain.Post;
+import com.hyukolog.api.exception.InvalidRequest;
 import com.hyukolog.api.request.PostCreate;
+import com.hyukolog.api.request.PostEdit;
 import com.hyukolog.api.request.PostSearch;
 import com.hyukolog.api.response.PostResponse;
 import com.hyukolog.api.service.PostService;
@@ -44,6 +46,8 @@ public class PostController {
         // Case1. 저장한 데이터 Entity -> response 로 응답하기
         // Case2. 저장한 데이터의 primary_id -> response 로 응답하기
         // Case3. 응답 필요 없음 -> 클라이언트에서 모든 POST(글) 데이터 context 를 관리함
+
+        request.validate();
         postService.write(request);
     }
 
@@ -68,9 +72,14 @@ public class PostController {
         return postService.getList(postSearch);
     }
 
-//    @PatchMapping("/posts/{postId}")
-//    public void update(@PathVariable Long postId, @RequestBody PostCreate request) {
-//        postService.update(postId, request);
-//    }
+    @PatchMapping("/posts/{postId}")
+    public void edit(@PathVariable Long postId, @RequestBody @Valid PostEdit postEdit){
+        postService.edit(postId, postEdit);
+    }
+
+    @DeleteMapping("/posts/{postId}")
+    public void delete(@PathVariable Long postId){
+        postService.delete(postId);
+    }
 
 }
