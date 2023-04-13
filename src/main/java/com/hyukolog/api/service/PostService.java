@@ -6,7 +6,14 @@ import com.hyukolog.api.request.PostCreate;
 import com.hyukolog.api.response.PostResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Slf4j
@@ -29,10 +36,15 @@ public class PostService {
         Post post =  postRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다."));
 
-        return PostResponse.builder()
-                .id(post.getId())
-                .title(post.getTitle())
-                .content(post.getContent())
-                .build();
+        return new PostResponse(post);
     }
+
+    public List<PostResponse> getList(Pageable pageable) {
+        // web -> page 1 -> 0
+
+        return postRepository.findAll(pageable).stream()
+                .map(PostResponse::new)
+                .collect(Collectors.toList());
+    }
+
 }

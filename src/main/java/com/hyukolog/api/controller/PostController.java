@@ -6,13 +6,12 @@ import com.hyukolog.api.response.PostResponse;
 import com.hyukolog.api.service.PostService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
-import java.util.Map;
 
 // ssr -> jsp, thymeleaf, mustache, freemarker
 // spa -> react, vue, angular
@@ -48,13 +47,29 @@ public class PostController {
     }
 
     /**
-     *  /posts -> 글 전체 조회(검색 + 페이징)
+     *
      *  /posts/{postId} -> 글 1개 조회
      */
 
     @GetMapping("/posts/{postId}")
-    public PostResponse get(@PathVariable(name = "postId") Long postId) {
+    public PostResponse get(@PathVariable Long postId) {
         return postService.get(postId);
     }
+
+    /**
+     *  조회 API
+     *  여러개 글을 조회하는 API
+     *  /posts -> 글 전체 조회(검색 + 페이징)
+     */
+
+    @GetMapping("/posts")
+    public List<PostResponse> getList(Pageable page) {
+        return postService.getList(page);
+    }
+
+//    @PatchMapping("/posts/{postId}")
+//    public void update(@PathVariable Long postId, @RequestBody PostCreate request) {
+//        postService.update(postId, request);
+//    }
 
 }

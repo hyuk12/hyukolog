@@ -5,9 +5,10 @@ import lombok.*;
 import javax.persistence.*;
 
 
-@Entity
+@Entity(name = "post_mst")
 @Getter
-@NoArgsConstructor(access = AccessLevel.PUBLIC)
+@AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Post {
 
     @Id
