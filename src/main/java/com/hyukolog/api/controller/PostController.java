@@ -42,13 +42,15 @@ public class PostController {
     // 글 등록
     // POST Method
     @PostMapping("/posts")
-    public void post(@RequestBody @Valid PostCreate request) {
+    public void post(@RequestBody @Valid PostCreate request, @RequestHeader String authorization){
         // Case1. 저장한 데이터 Entity -> response 로 응답하기
         // Case2. 저장한 데이터의 primary_id -> response 로 응답하기
         // Case3. 응답 필요 없음 -> 클라이언트에서 모든 POST(글) 데이터 context 를 관리함
+        if(authorization.equals("hyuko")){
+            request.validate();
+            postService.write(request);
+        }
 
-        request.validate();
-        postService.write(request);
     }
 
     /**

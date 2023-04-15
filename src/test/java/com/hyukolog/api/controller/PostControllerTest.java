@@ -1,6 +1,5 @@
 package com.hyukolog.api.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hyukolog.api.domain.Post;
 import com.hyukolog.api.repository.PostRepository;
@@ -65,28 +64,7 @@ class PostControllerTest {
     }
 
     @Test
-    @DisplayName("/posts 요청시 Hello World! 를 반환한다. (성공)")
-    void test() throws Exception {
-        // given
-        PostCreate request = PostCreate.builder()
-                .title("글제목입니다.")
-                .content("글내용입니다..")
-                .build();
-
-        String json = objectMapper.writeValueAsString(request);
-
-        // expected
-        mockMvc.perform(post("/posts")
-                        .contentType(APPLICATION_JSON)
-                        .content(json)
-                ) // application/json
-                .andExpect(status().isOk())
-                .andExpect(content().string(""))
-                .andDo(print());
-    }
-
-    @Test
-    @DisplayName("/posts 요청시 title 값은 필수다  (성공)")
+    @DisplayName("글 작성 요청시 title 값은 필수다  (성공)")
     void test2() throws Exception {
         // given
         PostCreate request = PostCreate.builder()
@@ -107,7 +85,7 @@ class PostControllerTest {
     }
 
     @Test
-    @DisplayName("/posts 요청시 db에 값이 저장된다  (성공)")
+    @DisplayName("글 작성 요청시 db에 값이 저장된다  (성공)")
     void test3() throws Exception {
         // given
         PostCreate request = PostCreate.builder()
@@ -119,6 +97,7 @@ class PostControllerTest {
 
         //when
         mockMvc.perform(post("/posts")
+                        .header("authorization", "hyuko")
                         .contentType(APPLICATION_JSON)
                         .content(json)
                 ) // application/json
