@@ -1,7 +1,5 @@
 package com.hyukolog.api.controller;
 
-import com.hyukolog.api.domain.Post;
-import com.hyukolog.api.exception.InvalidRequest;
 import com.hyukolog.api.request.PostCreate;
 import com.hyukolog.api.request.PostEdit;
 import com.hyukolog.api.request.PostSearch;
@@ -9,8 +7,6 @@ import com.hyukolog.api.response.PostResponse;
 import com.hyukolog.api.service.PostService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
